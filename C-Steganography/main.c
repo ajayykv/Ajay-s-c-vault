@@ -35,7 +35,7 @@ int main(int argc, char *argv[6])
     if(check_operation_type(argv) == e_encode)
     {
         printf(YELLOW"\nYou have chosen encoding.\n"RESET);
-        EncodeInfo encInfo;
+        EncodeInfo encInfo;     //declaring structure variable to store the info of the 3 files
 
         if(read_and_validate_encode_args(argv, &encInfo) == e_success)
         {
@@ -66,7 +66,7 @@ int main(int argc, char *argv[6])
             printf("read_and_validate_decode_args is successful.\n");
             if(do_decoding(&decInfo) == e_success)
             {
-                printf(GREEN"Decoding is successful.\n\n"RESET);
+                printf(GREEN" Decoding is successful.\n\n"RESET);
             }
             else
             {
@@ -90,7 +90,6 @@ int main(int argc, char *argv[6])
     return e_success;
 }
 
-/* function to Check operation type */
 OperationType check_operation_type(char *argv[])
 {
     if(strcmp(argv[1], "-e") == 0)

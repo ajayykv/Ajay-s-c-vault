@@ -5,7 +5,6 @@
 
 #define MAX_IMAGE_BUFFER_SIZE 8
 
-/*structure to store details of stego image file and output file*/
 typedef struct _DecodeInfo
 {
     /* Stego image Info */
@@ -54,6 +53,7 @@ Status decode_magic_string(DecodeInfo *decInfo);
 Status decode_data_from_image(char * data, int size, DecodeInfo *decInfo);
 
 /*To decode a byte from the lsb of image buffer of 8 bytes*/
+//Status decode_byte_from_lsb(char data, char *image_buffer);
 Status decode_byte_from_lsb(char* data, int pos, char *image_buffer);
 
 /*To decode the file extension size of the secret file*/

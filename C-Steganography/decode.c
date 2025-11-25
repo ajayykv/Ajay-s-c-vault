@@ -3,7 +3,6 @@
 #include "decode.h"
 #include "types.h"
 
-/*Read and validate Decode args from argv*/
 Status read_and_validate_decode_args(char *argv[], DecodeInfo *decInfo)
 {
     if(strstr(argv[2], ".bmp") != NULL)
@@ -17,10 +16,15 @@ Status read_and_validate_decode_args(char *argv[], DecodeInfo *decInfo)
         return e_failure;
     }
 
+    /*if(strchr(argv[3], '.') != NULL)
+    {
+        printf("Secret file is present.\n");
+        decInfo -> out_fname = argv[3];
+    }*/
+    
     return e_success;
 }
 
-/* to perform Decoding*/
 Status do_decoding(DecodeInfo *decInfo)
 {
     if(open_files_decode(decInfo) == e_success)
@@ -108,7 +112,6 @@ Status do_decoding(DecodeInfo *decInfo)
     return e_success;
 }
 
-/*To open stego.bmp and output.txt files*/
 Status open_files_decode(DecodeInfo *decInfo)
 {
     decInfo -> fptr_stego_image = fopen(decInfo -> stego_image_fname, "r");
@@ -121,7 +124,6 @@ Status open_files_decode(DecodeInfo *decInfo)
     return e_success;
 }
 
-/*Function to skip the header of stego.bmp file*/
 Status skip_bmp_header(FILE *fptr_stego)
 {
     rewind(fptr_stego);
@@ -129,16 +131,15 @@ Status skip_bmp_header(FILE *fptr_stego)
     return e_success;  
 }
 
-/*Function to decode magic string  size*/
 Status decode_magic_string_size(DecodeInfo *decInfo)
 {
     if(decode_size_from_lsb(&decInfo -> magic_string_size, decInfo) == e_success)
     {
+        //printf("original magic_string_size : %d\n", decInfo -> magic_string_size);
         return e_success;
     }
 }
 
-/*Function to decode magic string */
 Status decode_magic_string(DecodeInfo *decInfo)
 {
     char user_magic_string[20];
@@ -146,6 +147,7 @@ Status decode_magic_string(DecodeInfo *decInfo)
     scanf(" %[^\n]", user_magic_string);
     if(decode_data_from_image(decInfo -> original_magic_string, decInfo -> magic_string_size, decInfo) == e_success)
     {
+        //printf("magic string buffer : %s\n", decInfo -> original_magic_string);
         if(strcmp(user_magic_string, decInfo -> original_magic_string) == 0)
         return e_success;
         else 
@@ -156,7 +158,6 @@ Status decode_magic_string(DecodeInfo *decInfo)
     }
 }
 
-/* Function to decode data from image*/
 Status decode_data_from_image(char *data, int size, DecodeInfo *decInfo)
 {
     for(int i = 0; i < size; i++)
@@ -168,7 +169,6 @@ Status decode_data_from_image(char *data, int size, DecodeInfo *decInfo)
     return e_success;
 }
 
-/* Function to decode byte from lsb*/
 Status decode_byte_from_lsb(char* data, int pos, char *image_buffer)
  {
     char ch = '\0';
@@ -179,16 +179,15 @@ Status decode_byte_from_lsb(char* data, int pos, char *image_buffer)
     data[pos] = ch;
 }
 
-/*To decode the file extension size of the secret file*/
 Status decode_secret_file_extn_size(DecodeInfo *decInfo)
 {
     if(decode_size_from_lsb(&decInfo -> out_file_extn_size, decInfo) == e_success)
     {
+        printf("decInfo -> out_file_extn_size : %d\n", decInfo -> out_file_extn_size);
         return e_success;
     }
 }
 
-/*To decode integer type data(ie size) from lsb of image data*/
 Status decode_size_from_lsb(int *size, DecodeInfo *decInfo)
 {
     char image_buffer[32];
@@ -201,12 +200,11 @@ Status decode_size_from_lsb(int *size, DecodeInfo *decInfo)
     return e_success;
 }
 
-/*To decode the file extension of the secret file*/
 Status decode_secret_file_extn(DecodeInfo *decInfo)
 {
     if(decode_data_from_image(decInfo -> out_file_extn, decInfo -> out_file_extn_size, decInfo) == e_success)
     {
-        printf("out_file_extn : %s\n", decInfo -> out_file_extn);
+        printf("decInfo -> out_file_extn : %s\n", decInfo -> out_file_extn);
         strcpy(decInfo -> out_file_name, "output");
         decInfo -> out_fname = strcat(decInfo -> out_file_name, decInfo -> out_file_extn);
         decInfo -> fptr_out = fopen(decInfo -> out_fname, "w");
@@ -214,17 +212,15 @@ Status decode_secret_file_extn(DecodeInfo *decInfo)
     }
 }
 
-/*To decode the file size of the secret file*/
 Status decode_secret_file_size(DecodeInfo *decInfo)
 {
     if(decode_size_from_lsb(&decInfo -> out_file_size, decInfo) == e_success)
     {
-        printf("out_file_size : %d\n", decInfo -> out_file_size);
+        printf("decInfo -> out_file_size : %d\n", decInfo -> out_file_size);
         return e_success;
     }
 }
 
-/*To decode the data inside the secret file*/
 Status decode_secret_data(DecodeInfo *decInfo)
 {
     char out_file_data[decInfo -> out_file_size];

@@ -23,7 +23,6 @@ typedef enum
     e_failure
 } Status;
 
-/*OperationType will be used in function return type*/
 typedef enum
 {
     e_encode,
